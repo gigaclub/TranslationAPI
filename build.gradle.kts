@@ -29,11 +29,15 @@ repositories {
             mavenPom()
             artifact()
         }
+        credentials {
+            username = System.getenv("GITHUB_PACKAGES_USERID") ?: "kevtvkevin"
+            password = System.getenv("GITHUB_PACKAGES_PUBLISH_TOKEN") ?: "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"
+        }
     }
 }
 
 dependencies {
-    api("net.gigaclub:baseapi:14.0.1.0.0")
+    api("net.gigaclub:baseapi:14.0.1.0.1")
 }
 
 val sourcesJar by tasks.creating(Jar::class) {
