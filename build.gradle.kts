@@ -16,8 +16,11 @@ val myGithubIssueTrackerUrl = "https://github.com/${myGithubUsername}/${myArtifa
 val myLicense = "MIT"
 val myLicenseUrl = "https://opensource.org/licenses/MIT"
 
+val GITHUB_PACKAGES_USERID: String by project
+val GITHUB_PACKAGES_IMPORT_TOKEN: String by project
+
 configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_16
 }
 
 repositories {
@@ -30,8 +33,8 @@ repositories {
             artifact()
         }
         credentials {
-            username = System.getenv("GITHUB_PACKAGES_USERID") ?: "kevtvkevin"
-            password = System.getenv("GITHUB_PACKAGES_PUBLISH_TOKEN") ?: "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"
+            username = GITHUB_PACKAGES_USERID
+            password = GITHUB_PACKAGES_IMPORT_TOKEN
         }
     }
 }
@@ -54,8 +57,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/${myGithubUsername}/${myArtifactId}")
             credentials {
-                username = System.getenv("GITHUB_PACKAGES_USERID")
-                password = System.getenv("GITHUB_PACKAGES_PUBLISH_TOKEN")
+                username = GITHUB_PACKAGES_USERID
+                password = GITHUB_PACKAGES_IMPORT_TOKEN
             }
         }
     }
@@ -97,4 +100,3 @@ publishing {
         }
     }
 }
-
