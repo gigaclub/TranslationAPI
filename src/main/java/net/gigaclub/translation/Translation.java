@@ -37,4 +37,19 @@ public class Translation {
         return name;
     }
 
+    public void registerTranslation(String translationName) {
+        this.odoo.create(
+                "gc.translation",
+                Arrays.asList(
+                        new HashMap() {{ put("name", translationName); }}
+                )
+        );
+    }
+
+    public void registerTranslations(List<String> translationNames) {
+        for(String translationName : translationNames) {
+            this.registerTranslation(translationName);
+        }
+    }
+
 }
