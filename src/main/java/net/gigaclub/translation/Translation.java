@@ -37,13 +37,28 @@ public class Translation {
         return name;
     }
 
-    public void registerTranslation(String translationName) {
-        this.odoo.create(
+    public boolean checkIfTranslationExists(String translationName) {
+        return this.odoo.search_count(
                 "gc.translation",
                 Arrays.asList(
-                        new HashMap() {{ put("name", translationName); }}
+                        Arrays.asList(
+                                Arrays.asList("name", "=", translationName)
+                        )
                 )
-        );
+        ) > 0;
+    }
+
+    public void registerTranslation(String translationName) {
+        if (!this.checkIfTranslationExists(translationName)) {
+            this.odoo.create(
+                    "gc.translation",
+                    Arrays.asList(
+                            new HashMap() {{
+                                put("name", translationName);
+                            }}
+                    )
+            );
+        }
     }
 
     public void registerTranslations(List<String> translationNames) {
