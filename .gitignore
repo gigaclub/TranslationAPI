@@ -1,7 +1,3 @@
-
-# User-specific stuff
-../BaseAPI/.idea/
-
 *.iml
 *.ipr
 *.iws
@@ -120,4 +116,4 @@ run/
 
 gradle.properties
 
-idea/
+.idea/
