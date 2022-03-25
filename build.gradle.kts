@@ -31,7 +31,7 @@ repositories {
         }
         credentials {
             username = System.getenv("GITHUB_PACKAGES_USERID")
-            password = System.getenv("GITHUB_PACKAGES_USERID")
+            password = System.getenv("GITHUB_PACKAGES_IMPORT_TOKEN")
         }
     }
 }
@@ -55,7 +55,7 @@ publishing {
             url = uri("https://maven.pkg.github.com/${myGithubUsername}/${myArtifactId}")
             credentials {
                 username = System.getenv("GITHUB_PACKAGES_USERID")
-                password = System.getenv("GITHUB_PACKAGES_USERID")
+                password = System.getenv("GITHUB_PACKAGES_IMPORT_TOKEN")
             }
         }
     }
