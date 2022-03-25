@@ -16,9 +16,6 @@ val myGithubIssueTrackerUrl = "https://github.com/${myGithubUsername}/${myArtifa
 val myLicense = "MIT"
 val myLicenseUrl = "https://opensource.org/licenses/MIT"
 
-val GITHUB_PACKAGES_USERID: String by project
-val GITHUB_PACKAGES_IMPORT_TOKEN: String by project
-
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
@@ -33,8 +30,8 @@ repositories {
             artifact()
         }
         credentials {
-            username = GITHUB_PACKAGES_USERID
-            password = GITHUB_PACKAGES_IMPORT_TOKEN
+            username = System.getenv("GITHUB_PACKAGES_USERID")
+            password = System.getenv("GITHUB_PACKAGES_USERID")
         }
     }
 }
@@ -57,8 +54,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/${myGithubUsername}/${myArtifactId}")
             credentials {
-                username = GITHUB_PACKAGES_USERID
-                password = GITHUB_PACKAGES_IMPORT_TOKEN
+                username = System.getenv("GITHUB_PACKAGES_USERID")
+                password = System.getenv("GITHUB_PACKAGES_USERID")
             }
         }
     }
