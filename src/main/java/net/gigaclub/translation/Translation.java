@@ -1,7 +1,16 @@
 package net.gigaclub.translation;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import net.gigaclub.base.odoo.Odoo;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.apache.xmlrpc.XmlRpcException;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -9,9 +18,11 @@ public class Translation {
 
     private Odoo odoo;
     private String category;
+    private Plugin plugin;
 
-    public Translation(String hostname, String database, String username, String password) {
+    public Translation(String hostname, String database, String username, String password, Plugin plugin) {
         this.odoo = new Odoo(hostname, database, username, password);
+        this.plugin = plugin;
         this.category = "";
     }
 
@@ -19,28 +30,34 @@ public class Translation {
         this.category = category;
     }
 
-    public String t(String name, String playerUUID, List<String> values) {
+    public void sendMessage(String name, Player player, List<String> values) {
         try {
-            return (String) this.odoo.getModels().execute("execute_kw", Arrays.asList(
-                    this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
-                    "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, values, this.category)
-            ));
+            String playerUUID = player.getUniqueId().toString();
+            Gson gson = new Gson();
+            JsonElement translation = gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
+                "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, values, this.category)
+            ))).getAsJsonObject().get("values");
+            TextComponent message = (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translation);
+            player.sendMessage(message);
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
-        return name;
     }
 
-    public String t(String name, String playerUUID) {
+    public void sendMessage(String name, Player player) {
         try {
-            return (String) this.odoo.getModels().execute("execute_kw", Arrays.asList(
-                    this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
-                    "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, new ArrayList<String>(), this.category)
-            ));
+            String playerUUID = player.getUniqueId().toString();
+            Gson gson = new Gson();
+            JsonElement translation = gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
+                "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, new ArrayList<String>(), this.category)
+            ))).getAsJsonObject().get("values");
+            TextComponent message = (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translation);
+            player.sendMessage(message);
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
-        return name;
     }
 
     public boolean checkIfTranslationExists(String translationName) {

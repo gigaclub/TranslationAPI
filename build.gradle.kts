@@ -22,22 +22,37 @@ java {
 
 repositories {
     mavenCentral()
+//    maven {
+//        name = "GitHubPackages"
+//        url = uri("https://maven.pkg.github.com/gigaclub/baseapi")
+//        metadataSources {
+//            mavenPom()
+//            artifact()
+//        }
+//        credentials {
+//            username = System.getenv("GITHUB_PACKAGES_USERID")
+//            password = System.getenv("GITHUB_PACKAGES_IMPORT_TOKEN")
+//        }
+//    }
+    flatDir {
+        dirs("/home/kevin/Development/JavaAPI/BaseAPI/build/libs")
+    }
     maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/gigaclub/baseapi")
-        metadataSources {
-            mavenPom()
-            artifact()
-        }
-        credentials {
-            username = System.getenv("GITHUB_PACKAGES_USERID")
-            password = System.getenv("GITHUB_PACKAGES_IMPORT_TOKEN")
-        }
+        name = "papermc-repo"
+        url = uri("https://papermc.io/repo/repository/maven-public/")
+    }
+    maven {
+        name = "sonatype"
+        url = uri("https://oss.sonatype.org/content/groups/public/")
     }
 }
 
 dependencies {
     api("net.gigaclub:baseapi:14.0.1.0.3")
+    api("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
+    api("com.google.code.gson:gson:2.8.6")
+    api("org.apache.xmlrpc:xmlrpc-client:3.1.3")
+    api("org.json:json:20180813")
 }
 
 val sourcesJar by tasks.creating(Jar::class) {
