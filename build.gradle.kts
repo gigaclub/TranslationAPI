@@ -52,7 +52,6 @@ dependencies {
     api("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
     api("com.google.code.gson:gson:2.8.6")
     api("org.apache.xmlrpc:xmlrpc-client:3.1.3")
-    api("org.json:json:20180813")
 }
 
 val sourcesJar by tasks.creating(Jar::class) {

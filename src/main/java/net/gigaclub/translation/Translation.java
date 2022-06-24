@@ -2,15 +2,13 @@ package net.gigaclub.translation;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonObject;
 import net.gigaclub.base.odoo.Odoo;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.apache.xmlrpc.XmlRpcException;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.json.JSONObject;
 
 import java.util.*;
 
@@ -30,7 +28,11 @@ public class Translation {
         this.category = category;
     }
 
-    public void sendMessage(String name, Player player, List<String> values) {
+    // values rules
+    // widgets:
+    // - params: {"params": {params1: string, params2: string, ....}}
+    // - list: {"list": {list1: array of strings, list2: array of strings, ....}}
+    public void sendMessage(String name, Player player, JsonObject values) {
         try {
             String playerUUID = player.getUniqueId().toString();
             Object result = this.odoo.getModels().execute("execute_kw", Arrays.asList(
