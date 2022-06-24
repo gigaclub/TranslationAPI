@@ -33,13 +33,19 @@ public class Translation {
     public void sendMessage(String name, Player player, List<String> values) {
         try {
             String playerUUID = player.getUniqueId().toString();
-            Gson gson = new Gson();
-            JsonElement translation = gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
-                this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
-                "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, values, this.category)
-            ))).getAsJsonObject().get("values");
-            TextComponent message = (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translation);
-            player.sendMessage(message);
+            Object result = this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
+                    "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, values, this.category)
+            ));
+            try {
+                Gson gson = new Gson();
+                JsonElement translation = gson.toJsonTree(result).getAsJsonObject().get("values");
+                TextComponent message = (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translation);
+                player.sendMessage(message);
+            } catch (IllegalStateException e) {
+                String translationString = result.toString();
+                player.sendMessage(translationString);
+            }
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
@@ -48,13 +54,19 @@ public class Translation {
     public void sendMessage(String name, Player player) {
         try {
             String playerUUID = player.getUniqueId().toString();
-            Gson gson = new Gson();
-            JsonElement translation = gson.toJsonTree(this.odoo.getModels().execute("execute_kw", Arrays.asList(
-                this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
-                "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, new ArrayList<String>(), this.category)
-            ))).getAsJsonObject().get("values");
-            TextComponent message = (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translation);
-            player.sendMessage(message);
+            Object result = this.odoo.getModels().execute("execute_kw", Arrays.asList(
+                    this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
+                    "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, new ArrayList<String>(), this.category)
+            ));
+            try {
+                Gson gson = new Gson();
+                JsonElement translation = gson.toJsonTree(result).getAsJsonObject().get("values");
+                TextComponent message = (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translation);
+                player.sendMessage(message);
+            } catch (IllegalStateException e) {
+                String translationString = result.toString();
+                player.sendMessage(translationString);
+            }
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
