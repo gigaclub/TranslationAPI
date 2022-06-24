@@ -37,7 +37,7 @@ public class Translation {
             String playerUUID = player.getUniqueId().toString();
             Object result = this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
-                    "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, values, this.category)
+                    "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, values.toString(), this.category)
             ));
             try {
                 Gson gson = new Gson();
@@ -58,7 +58,7 @@ public class Translation {
             String playerUUID = player.getUniqueId().toString();
             Object result = this.odoo.getModels().execute("execute_kw", Arrays.asList(
                     this.odoo.getDatabase(), this.odoo.getUid(), this.odoo.getPassword(),
-                    "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, new ArrayList<String>(), this.category)
+                    "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, new JsonObject().toString(), this.category)
             ));
             try {
                 Gson gson = new Gson();
