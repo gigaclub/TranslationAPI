@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.gigaclub.base.odoo.Odoo;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.apache.commons.text.StringSubstitutor;
@@ -122,7 +123,7 @@ public class Translation {
                 }
                 return (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translationArray);
             } catch (IllegalStateException e) {
-                return (TextComponent) GsonComponentSerializer.gson().deserializeFromTree((JsonElement) result);
+                return Component.text(result.toString());
             }
         } catch (XmlRpcException e) {
             e.printStackTrace();
@@ -142,7 +143,7 @@ public class Translation {
                 JsonElement translation = gson.toJsonTree(result).getAsJsonObject().get("values");
                 return (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translation);
             } catch (IllegalStateException e) {
-                return (TextComponent) GsonComponentSerializer.gson().deserializeFromTree((JsonElement) result);
+                return Component.text(result.toString());
             }
         } catch (XmlRpcException e) {
             e.printStackTrace();
