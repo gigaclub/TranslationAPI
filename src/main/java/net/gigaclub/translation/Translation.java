@@ -34,7 +34,7 @@ public class Translation {
     // widgets:
     // - params: {"params": {params1: string, params2: string, ....}}
     // - list: {"list": {list1: array of strings, list2: array of strings, ....}}
-    public void sendMessage(String name, Player player, JsonObject values) {
+    public TextComponent t(String name, Player player, JsonObject values) {
         try {
             String playerUUID = player.getUniqueId().toString();
             Object result = this.odoo.getModels().execute("execute_kw", Arrays.asList(
@@ -120,18 +120,17 @@ public class Translation {
                         translationArray.add(t);
                     }
                 }
-                TextComponent message = (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translationArray);
-                player.sendMessage(message);
+                return (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translationArray);
             } catch (IllegalStateException e) {
-                String translationString = result.toString();
-                player.sendMessage(translationString);
+                return (TextComponent) GsonComponentSerializer.gson().deserializeFromTree((JsonElement) result);
             }
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    public void sendMessage(String name, Player player) {
+    public TextComponent t(String name, Player player) {
         try {
             String playerUUID = player.getUniqueId().toString();
             Object result = this.odoo.getModels().execute("execute_kw", Arrays.asList(
@@ -141,15 +140,22 @@ public class Translation {
             try {
                 Gson gson = new Gson();
                 JsonElement translation = gson.toJsonTree(result).getAsJsonObject().get("values");
-                TextComponent message = (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translation);
-                player.sendMessage(message);
+                return (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translation);
             } catch (IllegalStateException e) {
-                String translationString = result.toString();
-                player.sendMessage(translationString);
+                return (TextComponent) GsonComponentSerializer.gson().deserializeFromTree((JsonElement) result);
             }
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    public void sendMessage(String name, Player player, JsonObject values) {
+        player.sendMessage(t(name, player, values));
+    }
+
+    public void sendMessage(String name, Player player) {
+        player.sendMessage(t(name, player));
     }
 
     public boolean checkIfTranslationExists(String translationName) {
