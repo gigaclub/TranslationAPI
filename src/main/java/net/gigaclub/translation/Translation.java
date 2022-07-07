@@ -1,11 +1,13 @@
 package net.gigaclub.translation;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.gigaclub.base.odoo.Odoo;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import org.apache.commons.text.StringSubstitutor;
 import org.apache.xmlrpc.XmlRpcException;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -40,8 +42,50 @@ public class Translation {
                     "gc.translation", "get_translation_by_player_uuid", Arrays.asList(name, playerUUID, values.toString(), this.category)
             ));
             try {
+                boolean paramsExists = values.has("params");
+                boolean listsExists = values.has("list");
                 Gson gson = new Gson();
+
                 JsonElement translation = gson.toJsonTree(result).getAsJsonObject().get("values");
+                for (JsonElement t : translation.getAsJsonArray()) {
+                    if (t instanceof JsonObject) {
+                        JsonObject translationObject = t.getAsJsonObject();
+                        if (paramsExists) {
+                            JsonElement params = values.get("params");
+                            HashMap<String, Object> v = new Gson().fromJson(params, HashMap.class);
+                            StringSubstitutor sub = new StringSubstitutor(v);
+                            if (translationObject.has("text")) {
+                                String text = translationObject.get("text").getAsString();
+                                text = sub.replace(text);
+                                translationObject.addProperty("text", text);
+                            }
+                            if (translationObject.has("clickEvent")) {
+                                JsonObject clickEvent = translationObject.get("clickEvent").getAsJsonObject();
+                                if (clickEvent.has("value")) {
+                                    String value = clickEvent.get("value").getAsString();
+                                    value = sub.replace(value);
+                                    clickEvent.addProperty("value", value);
+                                }
+                            }
+                            if (translationObject.has("hoverEvent")) {
+                                JsonObject hoverEvent = translationObject.get("hoverEvent").getAsJsonObject();
+                                if (hoverEvent.get("action").getAsString().equals("show_text")) {
+                                    JsonArray value = hoverEvent.get("value").getAsJsonArray();
+                                    for (JsonElement vv : value) {
+                                        if (vv instanceof JsonObject) {
+                                            JsonObject vvv = vv.getAsJsonObject();
+                                            if (vvv.has("text")) {
+                                                String text = vvv.get("text").getAsString();
+                                                text = sub.replace(text);
+                                                vvv.addProperty("text", text);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 TextComponent message = (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translation);
                 player.sendMessage(message);
             } catch (IllegalStateException e) {
