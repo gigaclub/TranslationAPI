@@ -45,9 +45,9 @@ public class Translation {
                 boolean paramsExists = values.has("params");
                 boolean listsExists = values.has("list");
                 Gson gson = new Gson();
-
-                JsonElement translation = gson.toJsonTree(result).getAsJsonObject().get("values");
-                for (JsonElement t : translation.getAsJsonArray()) {
+                JsonArray translation = gson.toJsonTree(result).getAsJsonObject().get("values").getAsJsonArray();
+                JsonArray translationArray = new JsonArray();
+                for (JsonElement t : translation) {
                     if (t instanceof JsonObject) {
                         JsonObject translationObject = t.getAsJsonObject();
                         if (paramsExists) {
@@ -84,9 +84,43 @@ public class Translation {
                                 }
                             }
                         }
+                        if (listsExists) {
+                            if (translationObject.has("type")) {
+                                if (translationObject.get("type").getAsString().equals("list")) {
+                                    JsonObject lists = values.get("list").getAsJsonObject();
+                                    for(Map.Entry<String, JsonElement> entry : lists.entrySet()) {
+                                        if (translationObject.get("widget").getAsString().equals(entry.getKey())) {
+                                            JsonArray items = entry.getValue().getAsJsonArray();
+                                            JsonArray valueArray = translationObject.get("values").getAsJsonArray();
+                                            for (JsonElement item : items) {
+                                                String itemStr = item.getAsString();
+                                                for (JsonElement value : valueArray) {
+                                                    if (value instanceof JsonObject) {
+                                                        JsonObject valueObject = value.getAsJsonObject();
+                                                        if (valueObject.has("listitem") && valueObject.get("listitem").getAsBoolean()) {
+                                                            if (valueObject.has("text")) {
+                                                                valueObject.addProperty("text", itemStr);
+                                                            }
+                                                        }
+                                                        translationArray.add(valueObject.deepCopy());
+                                                    } else {
+                                                        translationArray.add(value);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (!translationObject.has("type")) {
+                            translationArray.add(translationObject);
+                        }
+                    } else {
+                        translationArray.add(t);
                     }
                 }
-                TextComponent message = (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translation);
+                TextComponent message = (TextComponent) GsonComponentSerializer.gson().deserializeFromTree(translationArray);
                 player.sendMessage(message);
             } catch (IllegalStateException e) {
                 String translationString = result.toString();
