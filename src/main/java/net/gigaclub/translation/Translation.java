@@ -128,7 +128,7 @@ public class Translation {
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
-        return null;
+        return Component.text("");
     }
 
     public TextComponent t(String name, Player player) {
@@ -148,7 +148,7 @@ public class Translation {
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
-        return null;
+        return Component.text("");
     }
 
     public void sendMessage(String name, Player player, JsonObject values) {
