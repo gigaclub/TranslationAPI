@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "net.gigaclub"
-version = "14.0.1.0.5"
+version = "14.0.1.0.6"
 
 val myArtifactId: String = rootProject.name
 val myArtifactGroup: String = project.group.toString()
@@ -34,10 +34,21 @@ repositories {
             password = System.getenv("GITHUB_PACKAGES_IMPORT_TOKEN")
         }
     }
+    maven {
+        name = "papermc-repo"
+        url = uri("https://papermc.io/repo/repository/maven-public/")
+    }
+    maven {
+        name = "sonatype"
+        url = uri("https://oss.sonatype.org/content/groups/public/")
+    }
 }
 
 dependencies {
     api("net.gigaclub:baseapi:14.0.1.0.3")
+    api("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
+    api("com.google.code.gson:gson:2.8.6")
+    api("org.apache.commons:commons-text:1.9")
 }
 
 val sourcesJar by tasks.creating(Jar::class) {
