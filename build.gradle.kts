@@ -36,17 +36,13 @@ repositories {
     }
     maven {
         name = "papermc-repo"
-        url = uri("https://papermc.io/repo/repository/maven-public/")
-    }
-    maven {
-        name = "sonatype"
-        url = uri("https://oss.sonatype.org/content/groups/public/")
+        url = uri("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
 dependencies {
     api("net.gigaclub:baseapi:14.0.1.0.3")
-    api("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
+    api("io.papermc.paper:paper-api:1.19-R0.1-SNAPSHOT")
     api("com.google.code.gson:gson:2.8.6")
     api("org.apache.commons:commons-text:1.9")
 }
